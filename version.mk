@@ -1,4 +1,4 @@
-NVIDIA_VERSION = 540.1.0
+NVIDIA_VERSION = 540.2.0
 
 # This file.
 VERSION_MK_FILE := $(lastword $(MAKEFILE_LIST))
