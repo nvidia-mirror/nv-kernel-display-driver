@@ -262,7 +262,7 @@ int nv_soc_register_irqs(nv_state_t *nv)
     int dpauxindex;
 
     /* Skip registering interrupts for OpenRM */
-    if (nv_is_rm_firmware_active(nv))
+    if (nv->request_firmware)
         return 0;
 
     nv->current_soc_irq = -1;
