@@ -766,7 +766,7 @@ int __init nvidia_init_module(void)
 
     nv_report_applied_patches();
 
-    nv_printf(NV_DBG_ERRORS, "NVRM: loading %s\n", pNVRM_ID);
+    nv_printf(NV_DBG_INFO, "NVRM: loading %s\n", pNVRM_ID);
 
 #if defined(NV_UVM_ENABLE)
     rc = nv_uvm_init();
