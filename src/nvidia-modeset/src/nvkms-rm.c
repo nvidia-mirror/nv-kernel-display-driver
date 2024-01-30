@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2013-2022 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2013-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -266,6 +266,7 @@ static NvBool QueryGpuCapabilities(NVDevEvoPtr pDevEvo)
     }
 
     pDevEvo->supportsSyncpts =
+        nvkms_kernel_supports_syncpts() &&
         nvRmEvoClassListCheck(pDevEvo, NV01_MEMORY_SYNCPOINT);
 
     return TRUE;

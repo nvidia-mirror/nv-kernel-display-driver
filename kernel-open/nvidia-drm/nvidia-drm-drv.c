@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2022, NVIDIA CORPORATION. All rights reserved.
+ * Copyright (c) 2015-2024, NVIDIA CORPORATION. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -354,18 +354,14 @@ static int nv_drm_create_properties(struct nv_drm_device *nv_dev)
         len++;
     }
 
-#if defined(NV_LINUX_NVHOST_H_PRESENT) && defined(CONFIG_TEGRA_GRHOST)
-    if (!nv_dev->supportsSyncpts) {
-        return 0;
+    if (nv_dev->supportsSyncpts) {
+        nv_dev->nv_out_fence_property =
+            drm_property_create_range(nv_dev->dev, DRM_MODE_PROP_ATOMIC,
+                    "NV_DRM_OUT_FENCE_PTR", 0, U64_MAX);
+        if (nv_dev->nv_out_fence_property == NULL) {
+            return -ENOMEM;
+        }
     }
-
-    nv_dev->nv_out_fence_property =
-        drm_property_create_range(nv_dev->dev, DRM_MODE_PROP_ATOMIC,
-            "NV_DRM_OUT_FENCE_PTR", 0, U64_MAX);
-    if (nv_dev->nv_out_fence_property == NULL) {
-        return -ENOMEM;
-    }
-#endif
 
     nv_dev->nv_input_colorspace_property =
         drm_property_create_enum(nv_dev->dev, 0, "NV_INPUT_COLORSPACE",
@@ -1332,9 +1328,21 @@ static const struct drm_ioctl_desc nv_drm_ioctls[] = {
                       DRM_RENDER_ALLOW|DRM_UNLOCKED),
 #endif
 
+    /*
+     * DRM_UNLOCKED is implicit for all non-legacy DRM driver IOCTLs since Linux
+     * v4.10 commit fa5386459f06 "drm: Used DRM_LEGACY for all legacy functions"
+     * (Linux v4.4 commit ea487835e887 "drm: Enforce unlocked ioctl operation
+     * for kms driver ioctls" previously did it only for drivers that set the
+     * DRM_MODESET flag), so this will race with SET_CLIENT_CAP. Linux v4.11
+     * commit dcf727ab5d17 "drm: setclientcap doesn't need the drm BKL" also
+     * removed locking from SET_CLIENT_CAP so there is no use attempting to lock
+     * manually. The latter commit acknowledges that this can expose userspace
+     * to inconsistent behavior when racing with itself, but accepts that risk.
+     */
     DRM_IOCTL_DEF_DRV(NVIDIA_GET_CLIENT_CAPABILITY,
                       nv_drm_get_client_capability_ioctl,
                       0),
+
 #if defined(NV_DRM_ATOMIC_MODESET_AVAILABLE)
     DRM_IOCTL_DEF_DRV(NVIDIA_GET_CRTC_CRC32,
                       nv_drm_get_crtc_crc32_ioctl,

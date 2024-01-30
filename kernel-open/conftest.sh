@@ -6281,6 +6281,27 @@ compile_test() {
             compile_check_conftest "$CODE" "NV_MEMORY_FAILURE_MF_SW_SIMULATED_DEFINED" "" "types"
         ;;
 
+        drm_unlocked_ioctl_flag_present)
+            # Determine if DRM_UNLOCKED IOCTL flag is present.
+            #
+            # DRM_UNLOCKED was removed by commit 2798ffcc1d6a ("drm: Remove
+            # locking for legacy ioctls and DRM_UNLOCKED") in Linux
+            # next-20231208.
+            #
+            # DRM_UNLOCKED definition was moved from drmP.h to drm_ioctl.h by
+            # commit 2640981f3600 ("drm: document drm_ioctl.[hc]") in v4.12.
+            CODE="
+            #if defined(NV_DRM_DRM_IOCTL_H_PRESENT)
+            #include <drm/drm_ioctl.h>
+            #endif
+            #if defined(NV_DRM_DRMP_H_PRESENT)
+            #include <drm/drmP.h>
+            #endif
+            int flags = DRM_UNLOCKED;"
+
+            compile_check_conftest "$CODE" "NV_DRM_UNLOCKED_IOCTL_FLAG_PRESENT" "" "types"
+        ;;
+
         sync_file_get_fence)
             #
             # Determine if sync_file_get_fence() function is present

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2022, NVIDIA CORPORATION. All rights reserved.
+ * Copyright (c) 2015-2024, NVIDIA CORPORATION. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -604,9 +604,7 @@ static int nv_drm_plane_atomic_set_property(
         to_nv_drm_plane_state(state);
 
     if (property == nv_dev->nv_out_fence_property) {
-#if defined(NV_LINUX_NVHOST_H_PRESENT) && defined(CONFIG_TEGRA_GRHOST)
         nv_drm_plane_state->fd_user_ptr = u64_to_user_ptr(val);
-#endif
         return 0;
     } else if (property == nv_dev->nv_input_colorspace_property) {
         nv_drm_plane_state->input_colorspace = val;

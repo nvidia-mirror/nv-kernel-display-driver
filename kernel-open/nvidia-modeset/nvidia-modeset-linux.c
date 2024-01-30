@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: Copyright (c) 2015-21 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+ * SPDX-FileCopyrightText: Copyright (c) 2015-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -97,6 +97,20 @@ NvBool nvkms_output_rounding_fix(void)
 NvBool nvkms_disable_hdmi_frl(void)
 {
     return disable_hdmi_frl;
+}
+
+NvBool nvkms_kernel_supports_syncpts(void)
+{
+/*
+ * Note this only checks that the kernel has the prerequisite
+ * support for syncpts; callers must also check that the hardware
+ * supports syncpts.
+ */
+#if (defined(CONFIG_TEGRA_GRHOST) || defined(NV_LINUX_HOST1X_NEXT_H_PRESENT))
+    return NV_TRUE;
+#else
+    return NV_FALSE;
+#endif
 }
 
 #define NVKMS_SYNCPT_STUBS_NEEDED
