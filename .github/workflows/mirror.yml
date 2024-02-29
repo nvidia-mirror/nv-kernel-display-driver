@@ -1,0 +1,21 @@
+# .github/workflows/mirror.yml
+name: 'mirror'
+on:
+  push:
+    branches:
+        - gh-actions
+  schedule:
+   - cron: '30 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    name: mirror
+    steps:
+      - name: mirror
+        id: mirror
+        uses: bridgelightcloud/github-mirror-action@v3
+        with:
+          origin: '	https://nv-tegra.nvidia.com/r/tegra/kernel-src/nv-kernel-display-driver.git'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
