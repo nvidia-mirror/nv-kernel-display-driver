@@ -17,5 +17,5 @@ jobs:
         id: mirror
         uses: bridgelightcloud/github-mirror-action@v3
         with:
-          origin: '	https://nv-tegra.nvidia.com/r/tegra/kernel-src/nv-kernel-display-driver.git'
+          origin: 'https://nv-tegra.nvidia.com/r/tegra/kernel-src/nv-kernel-display-driver.git'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
